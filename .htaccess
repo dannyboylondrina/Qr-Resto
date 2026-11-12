@@ -1,0 +1,18 @@
+# The app is served from /public. Block everything else in the project root.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Never expose source code, config, dependencies, logs or dotfiles
+    RewriteRule ^(app|vendor|writable|tests|builds|system)(/|$) - [F,L]
+    RewriteRule (^|/)\. - [F,L]
+    RewriteRule ^(spark|env|composer\.(json|lock)|phpunit\.xml\.dist|preload\.php|README\.md|LICENSE)$ - [F,L]
+
+    # Visiting the project root goes to the site
+    RewriteRule ^$ %{REQUEST_URI}public/ [R=302,L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+    Require all denied
+</IfModule>
